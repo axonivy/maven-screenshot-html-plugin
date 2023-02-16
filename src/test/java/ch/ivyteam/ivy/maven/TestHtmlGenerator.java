@@ -11,10 +11,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestHtmlGenerator {
+class TestHtmlGenerator {
 
   private LogCollector log;
   private List<File> images;
@@ -22,15 +22,15 @@ public class TestHtmlGenerator {
   private String conditionTab = "1-Condition Tab.png";
   private String newImgFolder = "newImg";
 
-  @Before
-  public void setUp() throws IOException {
+  @BeforeEach
+  void setUp() throws IOException {
     log = new LogCollector();
     images = Arrays.asList(load(newImgFolder + File.separator + nameTab),
             load(newImgFolder + File.separator + conditionTab));
   }
 
   @Test
-  public void generateHtml() {
+  void generateHtml() {
     String template = GenerateImageHtmlMojo.REPLACE_TAG_IMG + "\n" +
             GenerateImageHtmlMojo.REPLACE_TAG_TARGET_PATH + "\n" +
             GenerateImageHtmlMojo.REPLACE_TAG_JENKINS_URL;

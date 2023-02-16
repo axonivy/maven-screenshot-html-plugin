@@ -11,11 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestImageComparer {
+class TestImageComparer {
 
   private LogCollector log;
   private File refConditionTab;
@@ -23,8 +23,8 @@ public class TestImageComparer {
   private Path refRoot;
   private Path newRoot;
 
-  @Before
-  public void setUp() throws IOException {
+  @BeforeEach
+  void setUp() throws IOException {
     log = new LogCollector();
     refRoot = Files.createTempDirectory("refRoot");
     newRoot = Files.createTempDirectory("newRoot");
@@ -32,14 +32,14 @@ public class TestImageComparer {
     newConditionTab = load(newRoot, "newImg/1-Condition Tab.png");
   }
 
-  @After
-  public void tearDown() throws IOException {
+  @AfterEach
+  void tearDown() throws IOException {
     FileUtils.deleteDirectory(refRoot.toFile());
     FileUtils.deleteDirectory(newRoot.toFile());
   }
 
   @Test
-  public void compareIdenticalImages() {
+  void compareIdenticalImages() {
     new ImageComparer(refRoot.toFile(), refRoot.toFile(), asList(refConditionTab), 99.99f, log).compare();
     assertThat(log.getWarnings()).isEmpty();
     assertThat(log.getDebug().iterator().next().toString()).startsWith("comparing")
@@ -47,13 +47,13 @@ public class TestImageComparer {
   }
 
   @Test
-  public void compareDifferentImages() {
+  void compareDifferentImages() {
     compare(newConditionTab);
     assertThat(log.getWarnings().iterator().next().toString()).contains("Image only has similarity of");
   }
 
   @Test
-  public void compareDifferentSizedImages() throws IOException {
+  void compareDifferentSizedImages() throws IOException {
     load(refRoot, "refImg/0-Name Tab.png");
     File newNameTab = load(newRoot, "newImg/0-Name Tab.png");
     compare(newNameTab);
@@ -61,7 +61,7 @@ public class TestImageComparer {
   }
 
   @Test
-  public void compareNonExistentImages() {
+  void compareNonExistentImages() {
     File nonExistentImage = new File(newConditionTab.getParent(), "NonExistentImage.png");
     compare(nonExistentImage);
     assertThat(log.getWarnings().iterator().next().toString()).contains("Could not read image:");
