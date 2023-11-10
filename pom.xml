@@ -5,7 +5,7 @@
 
   <groupId>ch.ivyteam.maven</groupId>
   <artifactId>screenshot-html-plugin</artifactId>
-  <version>11.0.0</version>
+  <version>11.0.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <organization>
