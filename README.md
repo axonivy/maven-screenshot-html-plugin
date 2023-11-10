@@ -15,6 +15,6 @@ This plugin is used to compare screenshots in a browser.
 
 - Maven 3.9
 
-# 10.0
+### 10.0
 
 - Maven 3.6
