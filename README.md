@@ -2,6 +2,10 @@
 
 This plugin is used to compare screenshots in a browser.
 
+## Eclipse
+
+- Use "Import exsting Maven project"
+
 ## Releasing
 
 - Remove `-SNAPSHOT` from `pom.xml`
