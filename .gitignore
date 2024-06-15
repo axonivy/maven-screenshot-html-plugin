@@ -1,11 +1,6 @@
 target/
-*/target/
 
-/eclipseWorkspace
-/eclipse_workspace
-maven-version-plugin/testIvy
-maven-version-plugin/testProject
-public-api-source-maven-plugin/src/test/resources/test-project-template/bin/*
-/testProject
+.settings/
+.project
+.classpath
 
-.flattened-pom.xml
