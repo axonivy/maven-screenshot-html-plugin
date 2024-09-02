@@ -2,10 +2,9 @@ package ch.ivyteam.ivy.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,22 +32,21 @@ public class CompareImagesMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    List<File> newImages = toFiles(newImagesFs);
+    var newImages = toFiles(newImagesFs);
     getLog().info("analysing " + newImages.size() + " images in " + newImagesFs.getDirectory() + " with "
             + refImages);
-    new ImageComparer(refImages, new File(newImagesFs.getDirectory()), newImages, requiredSimilarity,
-            getLog()).compare();
+    new ImageComparer(refImages, new File(newImagesFs.getDirectory()), newImages, requiredSimilarity, getLog()).compare();
   }
 
   static List<File> toFiles(FileSet fs) throws MojoExecutionException {
     if (fs.getDirectory() == null) {
-      return Collections.emptyList();
+      return List.of();
     }
     try {
       return FileUtils.getFiles(
               new File(fs.getDirectory()),
-              StringUtils.join(fs.getIncludes(), ","),
-              StringUtils.join(fs.getExcludes(), ","));
+              fs.getIncludes().stream().collect(Collectors.joining(",")),
+              fs.getExcludes().stream().collect(Collectors.joining(",")));
     } catch (IOException ex) {
       throw new MojoExecutionException("Failed to resolve readme templates from '" + fs + "'", ex);
     }

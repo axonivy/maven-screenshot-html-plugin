@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -71,8 +69,8 @@ public class GenerateImageHtmlMojo extends AbstractMojo {
   }
 
   private String readTemplate() throws MojoExecutionException {
-    try {
-      return IOUtils.toString(getTemplateStream(), StandardCharsets.UTF_8);
+    try (var in = getTemplateStream()) {
+      return new String(in.readAllBytes(), StandardCharsets.UTF_8);
     } catch (IOException ex) {
       throw new MojoExecutionException("Failed reading template " + htmlTemplate.toPath() + " " + ex);
     }
@@ -88,8 +86,9 @@ public class GenerateImageHtmlMojo extends AbstractMojo {
   private void writeHtmlFile(String outputHtml) throws MojoExecutionException {
     getLog().debug("Writing " + outputHtml + " to file " + outputFile);
     try {
-      new File(outputFile.getParent()).mkdirs();
-      FileUtils.writeStringToFile(outputFile, outputHtml, StandardCharsets.UTF_8);
+      var path = outputFile.toPath();
+      Files.createDirectories(path.getParent());
+      Files.writeString(path, outputHtml);
     } catch (IOException ex) {
       throw new MojoExecutionException("Could not generate file in " + outputFile + " " + ex);
     }

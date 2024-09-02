@@ -3,8 +3,8 @@ package ch.ivyteam.ivy.maven;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 
 public class HtmlGenerator {
@@ -25,18 +25,16 @@ public class HtmlGenerator {
     this.artifactTargetPath = artifactTargetPath;
     this.imageFiles = imageFiles;
     this.rootDir = rootDir;
-    this.rootRelativePath = StringUtils.defaultString(rootRelativePath);
-    this.referenceRelativePath = StringUtils.defaultString(referenceRelativePath);
+    this.rootRelativePath = rootRelativePath == null ? "" : rootRelativePath;
+    this.referenceRelativePath = referenceRelativePath == null ? "" : referenceRelativePath;
     this.log = log;
   }
 
   public String generate() {
     imgTagBuilder = new StringBuilder();
     imageFiles.stream().forEach(this::appendImage);
-    String filledTemplate = StringUtils.replace(templateHtml, GenerateImageHtmlMojo.REPLACE_TAG_IMG,
-            imgTagBuilder.toString());
-    return StringUtils.replace(filledTemplate, GenerateImageHtmlMojo.REPLACE_TAG_TARGET_PATH,
-            artifactTargetPath + referenceRelativePath);
+    String filledTemplate = templateHtml.replace(GenerateImageHtmlMojo.REPLACE_TAG_IMG, imgTagBuilder.toString());
+    return filledTemplate.replace(GenerateImageHtmlMojo.REPLACE_TAG_TARGET_PATH, artifactTargetPath + referenceRelativePath);
   }
 
   private void appendImage(File image) {
@@ -49,10 +47,10 @@ public class HtmlGenerator {
 
   private void appendTitle(Path relativeImagePath) {
     String imgParent = relativeImagePath.getParent().toString();
-    if (!StringUtils.equals(imgParent, lastParent)) {
+    if (!Objects.equals(imgParent, lastParent)) {
       lastParent = imgParent;
       String title = relativeImagePath.getParent().toString();
-      String id = StringUtils.replace(title, " ", "-");
+      String id = title.replace(" ", "-");
       imgTagBuilder.append("<h3 id='" + id + "'>" + title + "</h3><a href='#" + id + "'>link</a></br>\n");
     }
   }
